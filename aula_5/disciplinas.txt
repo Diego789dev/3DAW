@@ -1,0 +1,3 @@
+nome;sigla;carga
+Fundamentos da Programação;FAC;20 horas
+Fundamentos da Programação;IHM;20 horas
