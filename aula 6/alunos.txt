@@ -1,0 +1,2 @@
+nome;cpf;matricula;data_nascimento
+Matematica;13674559720;20234708360049;2024-09-18
