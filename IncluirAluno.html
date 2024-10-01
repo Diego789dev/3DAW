@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Incluir Aluno</title>
+    <script>
+        function EnviarAluno() {
+            let objForm = document.getElementById("formAluno");
+            console.log("objForm: " + objForm.innerHTML);
+            let matricula = document.getElementById("matricula").value;
+            let nome = document.getElementById("nome").value;
+            let email = document.getElementById("email").value;
+            console.log("Matricula: " + matricula + " nome: " + nome + " email: " + email);
+            let objForm2 = {"matricula": matricula,"nome":nome,"email":email};
+            let objJson = JSON.stringify(objForm);
+            console.log("objForm2: " + objForm2);
+            console.log("JSON: " + objJson);
+
+            let xmlhttp = new XMLHttpRequest();
+            console.log("1");
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log("Chegou a resposta OK: " + this.responseText);
+                    console.log("2");
+                    document.getElementById("msg").innerHTML = this.responseText;
+                } else
+                    if (this.readyState < 4) {
+                        console.log("3: " + this.readyState);
+                    } else
+                        console.log("Requisicao falhou: " + this.status);
+            }
+            console.log("4");
+            xmlhttp.open("GET", "http://localhost/3daw/IncluirAluno.php?matricula=" + matricula +
+                            "&nome=" + nome + "&email=" + email);
+            xmlhttp.send();
+            console.log("enviei form");
+            console.log("5");
+        }
+        function ValidaForm(pmatricula, pnome, pemail) {
+            let msg = "";
+            if (pmatricula == "") msg = "matricula não preenchida. <br>";
+
+            return msg;
+        }
+    </script>
+</head>
+<body>
+<h1>Inserir Aluno</h1>
+<br>
+<a href="ex52_IncluirAlunoJS.html">Inserir Aluno</a><br>
+<a href="ex52_alterarAluno.html">Alterar Aluno</a><br>
+<a href="ex52_listarAlunos.html">Listar Alunos</a><br>
+<a href="ex52_excluirAluno.html">Excluir Aluno</a><br>
+<a href="ex52_detalheAluno.html">Detalhe de Aluno</a><br>
+<br>
+<form action="" method=GET name="formAluno" id="formAluno">
+    Matricula: <input type=text name="matricula" id="matricula" required> <br>
+    nome: <input type=text name="nome" id="nome"> <br>
+    email: <input type=text name="email" id="email"> <br>
+    <br><br>
+    <input type="button" value="Inserir" onclick="EnviarAluno();">
+</form>
+<p id="msg"></p>
+<br>
+</body>
+</html>
