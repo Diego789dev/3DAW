@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD de Alunos</title>
+</head>
+<body>
+    <h1>Gerenciamento de Alunos</h1>
+
+    <form id="formAluno">
+        <input type="hidden" id="id" />
+        <label>Nome:</label>
+        <input type="text" id="nome" required>
+        <label>Email:</label>
+        <input type="email" id="email" required>
+        <label>Idade:</label>
+        <input type="number" id="idade" required>
+        <button type="submit">Salvar</button>
+    </form>
+
+    <h2>Lista de Alunos</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Idade</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="alunosList"></tbody>
+    </table>
+
+    <script>
+        document.getElementById("formAluno").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const id = document.getElementById("id").value;
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
+            const idade = document.getElementById("idade").value;
+
+            const formData = new FormData();
+            formData.append("nome", nome);
+            formData.append("email", email);
+            formData.append("idade", idade);
+
+            let url = id ? "update.php" : "create.php";
+            if (id) formData.append("id", id);
+
+            fetch(url, {
+                method: "POST",
+                body: formData,
+            }).then(() => {
+                document.getElementById("formAluno").reset();
+                loadAlunos();
+            });
+        });
+
+        function loadAlunos() {
+            fetch("read.php")
+                .then(response => response.json())
+                .then(alunos => {
+                    const alunosList = document.getElementById("alunosList");
+                    alunosList.innerHTML = "";
+
+                    alunos.forEach(aluno => {
+                        const row = document.createElement("tr");
+
+                        row.innerHTML = `
+                            <td>${aluno.id}</td>
+                            <td>${aluno.nome}</td>
+                            <td>${aluno.email}</td>
+                            <td>${aluno.idade}</td>
+                            <td>
+                                <button onclick="editAluno(${aluno.id}, '${aluno.nome}', '${aluno.email}', ${aluno.idade})">Editar</button>
+                                <button onclick="deleteAluno(${aluno.id})">Excluir</button>
+                            </td>
+                        `;
+
+                        alunosList.appendChild(row);
+                    });
+                });
+        }
+
+        function editAluno(id, nome, email, idade) {
+            document.getElementById("id").value = id;
+            document.getElementById("nome").value = nome;
+            document.getElementById("email").value = email;
+            document.getElementById("idade").value = idade;
+        }
+
+        function deleteAluno(id) {
+            const formData = new FormData();
+            formData.append("id", id);
+
+            fetch("delete.php", {
+                method: "POST",
+                body: formData,
+            }).then(() => loadAlunos());
+        }
+
+        loadAlunos();
+    </script>
+</body>
+</html>
